@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Demo</title>
+    <script src="dist/index.min.js"></script>
+    <script src="testDataRaw.js"></script>
+    <script src="testDataHalfway.js"></script>
+</head>
+<style>
+    #fromexportedpng {
+        display: none;
+    }
+</style>
+<script>
+"use strict"
+window.addEventListener("load", () => {
+    console.log("testDataRaw", testDataRaw)
+    console.log("testDataHalfway", testDataHalfway)
+
+    topng.addEventListener("click", () => {
+        out.innerHTML = ""
+        fromexportedpng.style.display = "inline-block"
+        out.appendChild(PNGArrays.toPNG(testDataRaw))
+    })
+
+    frompng.addEventListener("click", () => {
+        console.log(PNGArrays.fromPNG(demoImg))
+    })
+    fromexportedpng.addEventListener("click", () => {
+        console.log(PNGArrays.fromPNG(out.querySelector("canvas")))
+    })
+})
+</script>
+<body>
+    Make sure to serve this page using the included server, to avoid cross origin issues
+    <img id="demoImg" src="fc.png">
+    <button id="topng">To PNG</button>
+    <button id="frompng">From above PNG</button>
+    <button id="fromexportedpng">From converted PNG</button>
+    <br><br>(Open the console)
+    <div id="out"></div>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "name": "pngArrays",
+  "version": "1.0.0",
+  "description": "Array to/from PNG converter",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test/tests.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "pngjs2": "2.0.0",
+    "optipng": "1.1.0"
+  },
+  "devDependencies": {
+    "chai": "3.5.0",
+    "coveralls": "^2.13.1",
+    "grunt": "^1.0.1",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-contrib-uglify-es": "git://github.com/gruntjs/grunt-contrib-uglify.git#harmony",
+    "mocha": "^3.4.2"
+  }
+}
