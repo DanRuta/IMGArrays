@@ -12,10 +12,10 @@ class PNGArrays {
             - long: limit of 127 digits (by using an additional character for storing metadata)
     */
 
-    static toPNG (array, {alpha=false, file=false, width=1000}={}) {
+    static toPNG (array, {alpha=false, file=false, width=1000, capacity=1}={}) {
 
         // Convert the array values to Uint8Clamped values (Base 15 with 16th value used as metadata)
-        array = array.constructor == Uint8ClampedArray ? array : this.prepareExportData(array)
+        array = array.constructor == Uint8ClampedArray ? array : this.prepareExportData(array, capacity)
 
         const height = Math.ceil((array.length/(alpha ? 4 : 3)) / width)
 
@@ -71,7 +71,7 @@ class PNGArrays {
         }
     }
 
-    static fromPNG (data, {alpha=false}={}) {
+    static fromPNG (data, {alpha=false, capacity=1}={}) {
 
         // Read from file
         if (typeof data == "string") {
@@ -104,7 +104,7 @@ class PNGArrays {
                     values.shift()
 
                     for (let i=0; i<values.length; i++) {
-                        values[i] = PNGArrays.hexToNum(values[i])
+                        values[i] = PNGArrays.hexToNum(values[i], capacity)
                     }
 
                     resolve(values)
@@ -145,7 +145,7 @@ class PNGArrays {
 
 
     // Helper functions
-    static prepareExportData (array) {
+    static prepareExportData (array, capacity) {
 
         const data = []
         let remainder = ""
@@ -153,7 +153,7 @@ class PNGArrays {
         for (let i=0; i<array.length; i++) {
 
             // Convert value to base15
-            const base = remainder + this.numToHex(array[i])
+            const base = remainder + this.numToHex(array[i], capacity)
             const parts = base.match(/.{1,2}/g)
             const length = parts.length
 
@@ -182,7 +182,7 @@ class PNGArrays {
         return context.getImageData(0, 0, canvas.width, canvas.height).data
     }
 
-    static hexToNum (hex) {
+    static hexToNum (hex, capacity=1) {
 
         if (hex=="00000") {
             return 0
@@ -198,15 +198,20 @@ class PNGArrays {
         const left = hex.slice(3, 3+valuesIn)
         let right = ""
 
+        // Return just the decimal part
+        if (capacity==0) {
+            return parseFloat("0."+"0".repeat(leadingDecZeroes) + parseInt(hex.slice(2+valuesIn, hex.length), 15))
+        }
+
         // If the left side's length is smaller than total length (aka a decimal value)
         if (left.length+3 < hex.length) {
-            right = "."+"0".repeat(leadingDecZeroes)+parseInt(hex.slice(3+valuesIn, hex.length), 15)
+            right = "."+"0".repeat(leadingDecZeroes) + parseInt(hex.slice(3+valuesIn, hex.length), 15)
         }
 
         return (positive ? 1 : -1) * parseFloat(parseInt(left, 15)+right)
     }
 
-    static numToHex (num) {
+    static numToHex (num, capacity=1) {
 
         const positive = num > 0
         let sign = num > 0 ? 7 : 0
@@ -220,8 +225,8 @@ class PNGArrays {
                 return "F"+sign.toString(15)+"0000"
             }
 
-            // The left part is capped
-            const cap = 2562890624
+            // The left part is capped to the biggest number that can be represented with 8 base15 characters
+            const cap = 2562890624 // Math.pow(15, 8)-1
             const left = Math.min(parseInt(num), cap).toString(15)
             const rightString = num.toString().split(".")[1]
 
@@ -231,20 +236,24 @@ class PNGArrays {
 
             sign += left.length-1
 
-            let final = "F"+sign.toString(15)+leadingDecZeroes+left+right
+            const meta = "F" + (capacity==1 ? sign.toString(15) : "") + leadingDecZeroes
+
+            let final = meta + left+right
 
             if (final.length%2!=0) {
-                final = "F"+sign.toString(15)+leadingDecZeroes+"0"+left+right
+                final = meta + "0"+left+right
             }
 
             return final
         }
 
         sign += num.toString().length-1
-        let final = "F"+sign.toString(15)+leadingDecZeroes+num.toString(15)
+        const meta = "F" + (capacity==1 ? sign.toString(15) : "") + leadingDecZeroes
+
+        let final = meta + num.toString(15)
 
         if (final.length%2!=0) {
-            final = "F"+sign.toString(15)+leadingDecZeroes+"0"+num.toString(15)
+            final = meta + "0"+num.toString(15)
         }
 
         return final

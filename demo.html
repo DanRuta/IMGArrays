@@ -21,16 +21,16 @@ window.addEventListener("load", () => {
         console.log(rawData)
         out.innerHTML = ""
         fromexportedpng.style.display = "inline-block"
-        out.appendChild(PNGArrays.toPNG(rawData))
+        out.appendChild(PNGArrays.toPNG(rawData, {capacity: 1}))
     })
 
     frompng.addEventListener("click", () => {
-        const data = PNGArrays.fromPNG(demoImg)
+        const data = PNGArrays.fromPNG(demoImg, {capacity: 1})
         console.log(data)
     })
 
     fromexportedpng.addEventListener("click", () => {
-        const data = PNGArrays.fromPNG(out.querySelector("canvas"))
+        const data = PNGArrays.fromPNG(out.querySelector("canvas"), {capacity: 1})
         // PNGArrays.unnormalize(data, minVal, maxVal)
         console.log(data)
     })

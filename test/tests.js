@@ -18,6 +18,9 @@ describe("numToHex", () => {
     it("Example 5", () => expect(PNGArrays.numToHex(170859374.1)).to.equal("Fd00eeeeeee1"))
     it("Example 6", () => expect(PNGArrays.numToHex(50000000)).to.equal("Fe00045c9c35"))
     it("Example 7", () => expect(PNGArrays.numToHex(99999999)).to.equal("Fe0008ba4969"))
+    // Capacity 0
+    it("Example 8", () => expect(PNGArrays.numToHex(0.6153651, 0)).to.equal("F000818486"))
+    it("Example 9", () => expect(PNGArrays.numToHex(0.6153689003735051, 0)).to.equal("F0003266688d960e1b"))
 })
 
 describe("hexToNum", () => {
@@ -28,6 +31,9 @@ describe("hexToNum", () => {
     it("Example 5", () => expect(PNGArrays.hexToNum("d00eeeeeee1")).to.equal(170859374.1))
     it("Example 6", () => expect(PNGArrays.hexToNum("e00045c9c35")).to.equal(50000000))
     it("Example 7", () => expect(PNGArrays.hexToNum("e0008ba4969")).to.equal(99999999))
+    // Capacity 0
+    it("Example 8", () => expect(PNGArrays.hexToNum("000818486", 0)).to.equal(0.6153651))
+    it("Example 9", () => expect(PNGArrays.hexToNum("0003266688d960e1b", 0)).to.equal(0.6153689003735051))
 })
 
 describe("MNIST Example", () => {
