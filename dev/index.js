@@ -182,14 +182,13 @@ class PNGArrays {
         return context.getImageData(0, 0, canvas.width, canvas.height).data
     }
 
-    static hexToNum (hex, TEMP) {
+    static hexToNum (hex) {
 
         if (hex=="00000") {
             return 0
         }
 
         if (hex===undefined) {
-            console.log(hex, "ghkdfhgjkldfhglkjflkdgfh", TEMP)
             return 0
         }
 
