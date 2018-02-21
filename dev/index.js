@@ -40,10 +40,11 @@ class PNGArrays {
                 }
 
                 const opti = new this.optipng(["-o7"])
+                const pngStream = PNG.pack()
+                const writeStream = this.fs.createWriteStream(file.replace(/\.png$/, "")+".png")
 
-                PNG.pack().pipe(opti).pipe(this.fs.createWriteStream(file.replace(/\.png$/, "")+".png"))
-
-                resolve()
+                pngStream.pipe(opti).pipe(writeStream)
+                writeStream.on("finish", () => resolve())
             })
 
         } else {
