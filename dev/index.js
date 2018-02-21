@@ -198,6 +198,7 @@ class PNGArrays {
         const left = hex.slice(3, 3+valuesIn)
         let right = ""
 
+        // If the left side's length is smaller than total length (aka a decimal value)
         if (left.length+3 < hex.length) {
             right = "."+"0".repeat(leadingDecZeroes)+parseInt(hex.slice(3+valuesIn, hex.length), 15)
         }
@@ -214,7 +215,7 @@ class PNGArrays {
         // Number is not an integer
         if (num !== parseInt(num)) {
 
-            // Discard values below 17 decimal places
+            // Discard values below 17 decimal places and return 0
             if (/\.0{17}$/.test(num.toFixed(17))) {
                 return "F"+sign.toString(15)+"0000"
             }
@@ -239,7 +240,7 @@ class PNGArrays {
             return final
         }
 
-        sign += num.toString().length
+        sign += num.toString().length-1
         let final = "F"+sign.toString(15)+leadingDecZeroes+num.toString(15)
 
         if (final.length%2!=0) {

@@ -3,8 +3,7 @@
 <head>
     <title>Demo</title>
     <script src="dist/index.min.js"></script>
-    <script src="testDataRaw.js"></script>
-    <script src="testDataHalfway.js"></script>
+    <script src="./benchmarks data/medium/rawData.js"></script>
 </head>
 <style>
     #fromexportedpng {
@@ -14,20 +13,26 @@
 <script>
 "use strict"
 window.addEventListener("load", () => {
-    console.log("testDataRaw", testDataRaw)
-    console.log("testDataHalfway", testDataHalfway)
+    console.log("rawData", rawData)
+
+    // const {minVal, maxVal} = PNGArrays.normalize(rawData)
 
     topng.addEventListener("click", () => {
+        console.log(rawData)
         out.innerHTML = ""
         fromexportedpng.style.display = "inline-block"
-        out.appendChild(PNGArrays.toPNG(testDataRaw))
+        out.appendChild(PNGArrays.toPNG(rawData))
     })
 
     frompng.addEventListener("click", () => {
-        console.log(PNGArrays.fromPNG(demoImg))
+        const data = PNGArrays.fromPNG(demoImg)
+        console.log(data)
     })
+
     fromexportedpng.addEventListener("click", () => {
-        console.log(PNGArrays.fromPNG(out.querySelector("canvas")))
+        const data = PNGArrays.fromPNG(out.querySelector("canvas"))
+        // PNGArrays.unnormalize(data, minVal, maxVal)
+        console.log(data)
     })
 })
 </script>

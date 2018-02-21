@@ -10,7 +10,7 @@ http.createServer((request, response) => {
     let path = url.parse(request.url).pathname
     let data
 
-    path = (path=="/"?"/demo.html":path)
+    path = decodeURIComponent(path=="/"?"/demo.html":path)
 
     console.log(path)
 
@@ -18,9 +18,7 @@ http.createServer((request, response) => {
         default:
             try {
                 data = fs.readFileSync(__dirname+path)
-            } catch (e) {
-                console.log(e)
-            }
+            } catch (e) {}
     }
 
     response.end(data)

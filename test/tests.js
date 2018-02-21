@@ -4,15 +4,36 @@ const chai = require("chai")
 const expect = chai.expect
 
 const {PNGArrays} = require("../dev/index.js")
-const {testDataRaw} = require("../testDataRaw.js")
-const {testDataHalfway} = require("../testDataHalfway.js")
+const {rawData} = require("../benchmarks data/medium/rawData.js")
+const {halfwayData} = require("../benchmarks data/medium/halfwayData.js")
 
 // TODO, more tests
 
+// Sanity tests and edge cases
+describe("numToHex", () => {
+    it("Example 1", () => expect(PNGArrays.numToHex(0.6153689003735051)).to.equal("F700003266688d960e1b"))
+    it("Example 2", () => expect(PNGArrays.numToHex(-0.6153651)).to.equal("F00000818486"))
+    it("Example 3", () => expect(PNGArrays.numToHex(10)).to.equal("F8000a"))
+    it("Example 4", () => expect(PNGArrays.numToHex(5000000)).to.equal("Fd0068b735"))
+    it("Example 5", () => expect(PNGArrays.numToHex(170859374.1)).to.equal("Fd00eeeeeee1"))
+    it("Example 6", () => expect(PNGArrays.numToHex(50000000)).to.equal("Fe00045c9c35"))
+    it("Example 7", () => expect(PNGArrays.numToHex(99999999)).to.equal("Fe0008ba4969"))
+})
+
+describe("hexToNum", () => {
+    it("Example 1", () => expect(PNGArrays.hexToNum("700003266688d960e1b")).to.equal(0.6153689003735051))
+    it("Example 2", () => expect(PNGArrays.hexToNum("00000818486")).to.equal(-0.6153651))
+    it("Example 3", () => expect(PNGArrays.hexToNum("8000a")).to.equal(10))
+    it("Example 4", () => expect(PNGArrays.hexToNum("d0068b735")).to.equal(5000000))
+    it("Example 5", () => expect(PNGArrays.hexToNum("d00eeeeeee1")).to.equal(170859374.1))
+    it("Example 6", () => expect(PNGArrays.hexToNum("e00045c9c35")).to.equal(50000000))
+    it("Example 7", () => expect(PNGArrays.hexToNum("e0008ba4969")).to.equal(99999999))
+})
+
 describe("MNIST Example", () => {
     it("Converts the data to hex correctly", () => {
-        const converted = PNGArrays.prepareExportData(testDataRaw)
-        const expected = new Uint8ClampedArray(testDataHalfway)
+        const converted = PNGArrays.prepareExportData(rawData)
+        const expected = new Uint8ClampedArray(halfwayData)
         // expect(converted).to.deep.equal(expected) // This freezes, for some reason
 
         for (let i=0; i<expected.length; i++) {
