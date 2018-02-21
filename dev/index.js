@@ -12,12 +12,11 @@ class PNGArrays {
             - long: limit of 127 digits (by using an additional character for storing metadata)
     */
 
-    static toPNG (array, {alpha=false, file=false}={}) {
+    static toPNG (array, {alpha=false, file=false, width=1000}={}) {
 
         // Convert the array values to Uint8Clamped values (Base 15 with 16th value used as metadata)
         array = array.constructor == Uint8ClampedArray ? array : this.prepareExportData(array)
 
-        const width = 1000 // TODO, calculate or configure value for this
         const height = Math.ceil((array.length/(alpha ? 4 : 3)) / width)
 
         // Write to file

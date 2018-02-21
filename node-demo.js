@@ -5,7 +5,7 @@ const {rawData} = require("./benchmarks data/medium/rawData.js")
 
 console.log("Converting data to PNG...")
 
-PNGArrays.toPNG(rawData, {file: "./node-demo.png"})
+PNGArrays.toPNG(rawData, {file: "./node-demo.png", width: 500})
 .then(() => {
     console.log("done.")
 
