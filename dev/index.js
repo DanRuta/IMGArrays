@@ -2,17 +2,7 @@
 
 class PNGArrays {
 
-    /*
-        TODO
-
-        - test the alpha functionality (and add more tests, in general)
-
-        - short/big numbers optimization, to allow storing larger numbers
-            - normal: limit of 7 digits on the left hand side of the decimal place
-            - long: limit of 127 digits (by using an additional character for storing metadata)
-    */
-
-    static toPNG (array, {alpha=false, file=false, width=1000, capacity=1}={}) {
+    static toPNG (array, {alpha=false, file=false, width=Math.ceil(Math.sqrt(array.length*(alpha?3:4))), capacity=1}={}) {
 
         // Convert the array values to Uint8Clamped values (Base 15 with 16th value used as metadata)
         array = array.constructor == Uint8ClampedArray ? array : this.prepareExportData(array, capacity)
@@ -192,20 +182,32 @@ class PNGArrays {
             return 0
         }
 
-        const positive = parseInt(hex[0], 16) >= 7
-        const valuesIn = parseInt(hex[0], 15) - (positive ? 6 : -1)
-        const leadingDecZeroes = parseInt(hex.slice(1, 3), 15)
-        const left = hex.slice(3, 3+valuesIn)
+        const positive = capacity==2 ? (parseInt(hex.slice(0, 2), 15) >= 112) : (parseInt(hex[0], 16) >= 7)
+        const metaOffset = capacity+2
+
+        const meta = hex.slice(0, metaOffset)
+        hex = hex.replace(meta, "")
+
+        let valuesIn
+
+        if (capacity==2) {
+            valuesIn = parseInt(meta.slice(0, 2), 15) - ((positive ? 112 : 0) - 1)
+        } else {
+            valuesIn = parseInt(meta[0], 15) - (positive ? 6 : -1)
+        }
+
         let right = ""
+        const left = hex.slice(0, valuesIn) || "0"
+        const leadingDecZeroes = parseInt(meta.slice(capacity, metaOffset), 15)
 
         // Return just the decimal part
         if (capacity==0) {
-            return parseFloat("0."+"0".repeat(leadingDecZeroes) + parseInt(hex.slice(2+valuesIn, hex.length), 15))
+            return parseFloat("0."+"0".repeat(leadingDecZeroes) + parseInt(hex.slice(valuesIn, hex.length), 15))
         }
 
         // If the left side's length is smaller than total length (aka a decimal value)
-        if (left.length+3 < hex.length) {
-            right = "."+"0".repeat(leadingDecZeroes) + parseInt(hex.slice(3+valuesIn, hex.length), 15)
+        if (left.length < hex.length) {
+            right = "."+"0".repeat(leadingDecZeroes) + parseInt(hex.slice(valuesIn, hex.length), 15)
         }
 
         return (positive ? 1 : -1) * parseFloat(parseInt(left, 15)+right)
@@ -213,12 +215,17 @@ class PNGArrays {
 
     static numToHex (num, capacity=1) {
 
-        const positive = num > 0
-        let sign = num > 0 ? 7 : 0
+        let sign
         let leadingDecZeroes = "00"
 
+        if (capacity==2) {
+            sign = num > 0 ? 112 : 0
+        } else {
+            sign = num > 0 ? 7 : 0
+        }
+
         // Number is not an integer
-        if (num !== parseInt(num)) {
+        if (!Number.isInteger(num)) {
 
             // Discard values below 17 decimal places and return 0
             if (/\.0{17}$/.test(num.toFixed(17))) {
@@ -226,37 +233,29 @@ class PNGArrays {
             }
 
             // The left part is capped to the biggest number that can be represented with 8 base15 characters
-            const cap = 2562890624 // Math.pow(15, 8)-1
-            const left = Math.min(parseInt(num), cap).toString(15)
+            let left
+            if (capacity==2) {
+                left = parseInt(num).toString(15)
+            } else {
+                const cap = 2562890624 // Math.pow(15, 8)-1
+                left = Math.min(parseInt(num), cap).toString(15)
+            }
+
             const rightString = num.toString().split(".")[1]
 
             leadingDecZeroes = Math.min(/^0*/.exec(rightString)[0].length, 15).toString(15).padStart(2, 0)
             const right = parseInt(rightString).toString(15)
 
-
             sign += left.length-1
 
-            const meta = "F" + (capacity==1 ? sign.toString(15) : "") + leadingDecZeroes
-
-            let final = meta + left+right
-
-            if (final.length%2!=0) {
-                final = meta + "0"+left+right
-            }
-
-            return final
+            const meta = "F" + (capacity==0 ? "" : sign.toString(15).padStart(capacity, 0)) + leadingDecZeroes
+            return meta + left+right
         }
 
         sign += num.toString().length-1
-        const meta = "F" + (capacity==1 ? sign.toString(15) : "") + leadingDecZeroes
 
-        let final = meta + num.toString(15)
-
-        if (final.length%2!=0) {
-            final = meta + "0"+num.toString(15)
-        }
-
-        return final
+        const meta = "F" + (capacity==0 ? "" : sign.toString(15).padStart(capacity, 0)) + leadingDecZeroes
+        return meta + num.toString(15)
     }
 
     static normalize (data) {
