@@ -17,12 +17,19 @@ The library can be used in both the browser, and nodejs. The nodejs version, how
 
 ##### PNGArrays.toPNG(array, {alpha, file, width, capacity})
 **array** - _Array_ |_Uint8ClampedArray_
+
 The array of data to convert. This can be either a Uint8ClampedArray, or an array of numbers that will get converted to Uint8ClampedArray
+
 **alpha** - _Boolean_ (Optional) - *Default*: `false`
+
  Whether to use the alpha channel for storing data. The file size is not affected, but the image dimensions are smaller, when used.
+
 **file** - _String_
+
 For Nodejs use. Gives the file path to write to. Required to switch to the nodejs logic, instead of the browser's.
+
 **capacity** - _int_ - *Default*: `1`
+
 How many characters of metadata to use per value. More information and explanation on this to follow, but in short, 0 is for normalized values, 1 (default) for values up to 99999999, and 2 for values up to 999999999999999. Smaller capacities use smaller file sizes.
 
 
@@ -30,12 +37,17 @@ How many characters of metadata to use per value. More information and explanati
 
 ##### PNGArrays.fromPNG(data, {alpha, capacity})
 **data** - _Uint8ClampedArray_|_HTMLImageElement_|_string_
+
 The PNG data to parse. This can be an image element, when using the browser.
 For reading from a file, when using nodejs, this can be a string for the file path to read from.
 Finally, it can be a Uint8ClampedArray, in either case.
+
 **alpha** - _Boolean_ (Optional) - *Default*: `false`
+
 Whether to use the alpha channel, when parsing. You need to make sure that alpha was used when converting, if using this option.
+
 **capacity** - _int_ - *Default*: `1`
+
 The capacity to use for parsing. Must be the same as the value used when converting to PNG.
 
 
