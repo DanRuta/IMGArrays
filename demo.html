@@ -6,7 +6,7 @@
     <script src="./benchmarks data/medium/rawData.js"></script>
 </head>
 <style>
-    #fromexportedpng {
+    #fromexportedpng, #download {
         display: none;
     }
 </style>
@@ -21,6 +21,7 @@ window.addEventListener("load", () => {
         console.log(rawData)
         out.innerHTML = ""
         fromexportedpng.style.display = "inline-block"
+        download.style.display = "inline-block"
         out.appendChild(PNGArrays.toPNG(rawData, {capacity: 1}))
     })
 
@@ -34,6 +35,18 @@ window.addEventListener("load", () => {
         // PNGArrays.unnormalize(data, minVal, maxVal)
         console.log(data)
     })
+
+    download.addEventListener("click", () => {
+        console.log("downloading image")
+
+        const link = document.createElement("a")
+        link.download = "image.png"
+
+        out.querySelector("canvas").toBlob(blob => {
+            link.href = URL.createObjectURL(blob)
+            link.click()
+        }, "image/png")
+    })
 })
 </script>
 <body>
@@ -44,5 +57,6 @@ window.addEventListener("load", () => {
     <button id="fromexportedpng">From converted PNG</button>
     <br><br>(Open the console)
     <div id="out"></div>
+    <button id="download">Download</button>
 </body>
 </html>
