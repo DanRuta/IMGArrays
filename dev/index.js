@@ -1,5 +1,12 @@
 "use strict"
 
+/*
+    TODO
+        - Toggleable use of leadingDecZeroes ? would this help in cases where values are not all tiny ?
+        - Toggleable use of normalization, saving min and max values at the start, behind/between a FF delimiter
+        - Automatically choose the best capacity size, by parsing all values first, checking for limits
+*/
+
 class PNGArrays {
 
     static toPNG (array, {alpha=false, file=false, width=Math.ceil(Math.sqrt(array.length*(alpha?3:4))), capacity=1}={}) {
@@ -295,6 +302,16 @@ class PNGArrays {
         for (let i=0; i<data.length; i++) {
             data[i] = data[i] * (-1*minVal + maxVal) - -1*minVal
         }
+    }
+
+    static downloadImage (canvas, {name="image"}) {
+        const link = document.createElement("a")
+        link.download = `${name}.png`
+
+        canvas.toBlob(blob => {
+            link.href = URL.createObjectURL(blob)
+            link.click()
+        }, `image/png`, 1)
     }
 }
 

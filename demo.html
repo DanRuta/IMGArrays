@@ -6,7 +6,7 @@
     <script src="./benchmarks data/medium/rawData.js"></script>
 </head>
 <style>
-    #fromexportedpng, #download {
+    #fromexportedpng, #downloadPNG {
         display: none;
     }
 </style>
@@ -21,8 +21,10 @@ window.addEventListener("load", () => {
         console.log(rawData)
         out.innerHTML = ""
         fromexportedpng.style.display = "inline-block"
-        download.style.display = "inline-block"
-        out.appendChild(PNGArrays.toPNG(rawData, {capacity: 1}))
+        downloadPNG.style.display = "inline-block"
+        const canvas = PNGArrays.toPNG(rawData, {capacity: 1})
+        canvas.id = "theCanvas"
+        out.appendChild(canvas)
     })
 
     frompng.addEventListener("click", () => {
@@ -36,27 +38,19 @@ window.addEventListener("load", () => {
         console.log(data)
     })
 
-    download.addEventListener("click", () => {
-        console.log("downloading image")
+    downloadPNG.addEventListener("click", () => PNGArrays.downloadImage(theCanvas, {name: "image"}))
 
-        const link = document.createElement("a")
-        link.download = "image.png"
-
-        out.querySelector("canvas").toBlob(blob => {
-            link.href = URL.createObjectURL(blob)
-            link.click()
-        }, "image/png")
-    })
 })
 </script>
 <body>
     Make sure to serve this page using the included server, to avoid cross origin issues
-    <img id="demoImg" src="fc.png">
-    <button id="topng">To PNG</button>
-    <button id="frompng">From above PNG</button>
-    <button id="fromexportedpng">From converted PNG</button>
+    <img id="demoImg" src="fc.png"><br>
+    <button id="topng">Convert above to an image</button>
+    <button id="frompng">From above image</button>
+    <button id="fromexportedpng">From converted image</button>
     <br><br>(Open the console)
+    <button id="downloadPNG">Download as PNG</button>
+    <br><br>
     <div id="out"></div>
-    <button id="download">Download</button>
 </body>
 </html>
