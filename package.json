@@ -10,8 +10,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "pngjs2": "2.0.0",
-    "optipng": "1.1.0"
+    "canvas-prebuilt": "1.6.5-prerelease.1"
   },
   "devDependencies": {
     "chai": "3.5.0",
