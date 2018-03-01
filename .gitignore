@@ -1,4 +1,6 @@
+Chart.min.js
 node_modules
+node-demo.png
 npm-debug.log
 .nyc_output
 coverage

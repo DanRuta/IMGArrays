@@ -39,13 +39,19 @@ if (!dataPath && !doAllBenchmarks) {
 }
 
 
+// Cache read data
+const data = {}
+
 const convert = (file, useAlpha, capacity, folder) => {
 
-    console.log(`Reading ./${folder}/rawData.js`)
-    const {rawData} = require(`./${folder}/rawData.js`)
+    if (!data[folder]) {
+        console.log(`Reading ./${folder}/rawData.js`)
+        data[folder] = require(`./${folder}/rawData.js`).rawData
+    }
+
     console.log(`Converting ${folder} Capacity: ${capacity} Alpha: ${useAlpha}...`)
 
-    PNGArrays.toPNG(rawData, {
+    PNGArrays.toPNG(data[folder], {
         alpha: useAlpha,
         capacity: capacity,
         file: file
@@ -59,7 +65,7 @@ if (doAllBenchmarks) {
     ["small", "medium-small", "medium", "medium-large", "large"].forEach(folder => {
         for (let c=0; c<3; c++) {
             convert(`./${folder}/node-${c}.png`, false, c, folder)
-            convert(`./${folder}/node-${c}-alpha.png`, true, c, folder)
+            // convert(`./${folder}/node-${c}-alpha.png`, true, c, folder)
         }
     })
 

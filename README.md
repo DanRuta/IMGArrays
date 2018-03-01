@@ -32,6 +32,10 @@ For Nodejs use. Gives the file path to write to. Required to switch to the nodej
 
 How many characters of metadata to use per value. More information and explanation on this to follow, but in short, 0 is for normalized values, 1 (default) for values up to 99999999, and 2 for values up to 999999999999999. Smaller capacities use smaller file sizes.
 
+**lDecZeroes** - _bool_ - *Default*: `true`
+
+Whether to use a metadata character to encode leading decimal zeroes. This can be turned off, for example, if the values encoded are not decimal, or you are absolutely sure none of them have decimal values that start with 0.
+
 
 ### Converting from PNG
 

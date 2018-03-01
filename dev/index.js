@@ -2,17 +2,16 @@
 
 /*
     TODO
-        - Toggleable use of leadingDecZeroes ? would this help in cases where values are not all tiny ?
         - Toggleable use of normalization, saving min and max values at the start, behind/between a FF delimiter
         - Automatically choose the best capacity size, by parsing all values first, checking for limits
 */
 
 class PNGArrays {
 
-    static toPNG (array, {alpha=false, file=false, width=Math.ceil(Math.sqrt(array.length*(alpha?3:4))), capacity=1}={}) {
+    static toPNG (array, {alpha=false, file=false, lDecZeroes=true, width=Math.ceil(Math.sqrt(array.length*(alpha?3:4))), capacity=1}={}) {
 
         // Convert the array values to Uint8Clamped values (Base 15 with 16th value used as metadata)
-        array = array.constructor == Uint8ClampedArray ? array : this.prepareExportData(array, capacity)
+        array = array.constructor == Uint8ClampedArray ? array : this.prepareExportData(array, capacity, lDecZeroes)
 
         const height = Math.ceil((array.length/(alpha ? 4 : 3)) / width)
 
@@ -49,11 +48,13 @@ class PNGArrays {
             canvas.width = width
             canvas.height = height
             const context = canvas.getContext("2d")
-
             const imgData = context.getImageData(0, 0, canvas.width, canvas.height)
 
             if (alpha) {
-                context.putImageData(array, 0, 0)
+                for (let i=0; i<array.length; i++) {
+                    imgData.data[i] = array[i]
+                }
+                context.putImageData(imgData, 0, 0)
             } else {
                 for (let i=0; i<array.length/3; i++) {
                     imgData.data[i*4]   = array[i*3]
@@ -142,7 +143,7 @@ class PNGArrays {
 
 
     // Helper functions
-    static prepareExportData (array, capacity) {
+    static prepareExportData (array, capacity, lDecZeroes=true) {
 
         const data = []
         let remainder = ""
@@ -150,7 +151,7 @@ class PNGArrays {
         for (let i=0; i<array.length; i++) {
 
             // Convert value to base15
-            const base = remainder + this.numToHex(array[i], capacity)
+            const base = remainder + this.numToHex(array[i], capacity, lDecZeroes)
             const parts = base.match(/.{1,2}/g)
             const length = parts.length
 
@@ -179,7 +180,7 @@ class PNGArrays {
         return context.getImageData(0, 0, canvas.width, canvas.height).data
     }
 
-    static hexToNum (hex, capacity=1) {
+    static hexToNum (hex, capacity=1, lDecZeroes=true) {
 
         if (hex=="00000") {
             return 0
@@ -190,7 +191,7 @@ class PNGArrays {
         }
 
         const positive = capacity==2 ? (parseInt(hex.slice(0, 2), 15) >= 112) : (parseInt(hex[0], 16) >= 7)
-        const metaOffset = capacity+2
+        const metaOffset = capacity + (lDecZeroes ? 1 : 0)
 
         const meta = hex.slice(0, metaOffset)
         hex = hex.replace(meta, "")
@@ -205,7 +206,7 @@ class PNGArrays {
 
         let right = ""
         const left = hex.slice(0, valuesIn) || "0"
-        const leadingDecZeroes = parseInt(meta.slice(capacity, metaOffset), 15)
+        const leadingDecZeroes = lDecZeroes ? parseInt(meta.slice(capacity, metaOffset), 15) : 0
 
         // Return just the decimal part
         if (capacity==0) {
@@ -220,7 +221,7 @@ class PNGArrays {
         return (positive ? 1 : -1) * parseFloat(parseInt(left, 15)+right)
     }
 
-    static numToHex (num, capacity=1) {
+    static numToHex (num, capacity=1, lDecZeroes=true) {
 
         let sign
         let leadingDecZeroes = "00"
@@ -230,6 +231,8 @@ class PNGArrays {
         } else {
             sign = num > 0 ? 7 : 0
         }
+
+        num = Math.abs(num)
 
         // Number is not an integer
         if (!Number.isInteger(num)) {
@@ -250,18 +253,28 @@ class PNGArrays {
 
             const rightString = num.toString().split(".")[1]
 
-            leadingDecZeroes = Math.min(/^0*/.exec(rightString)[0].length, 15).toString(15).padStart(2, 0)
+            leadingDecZeroes = Math.min(/^0*/.exec(rightString)[0].length, 15).toString(15).padStart((lDecZeroes ? 1 : 0), 0)
             const right = parseInt(rightString).toString(15)
 
             sign += left.length-1
 
-            const meta = "F" + (capacity==0 ? "" : sign.toString(15).padStart(capacity, 0)) + leadingDecZeroes
+            let meta = "F" + (capacity==0 ? "" : sign.toString(15).padStart(capacity, 0))
+
+            if (lDecZeroes) {
+                meta += leadingDecZeroes
+            }
+
             return meta + left+right
         }
 
         sign += num.toString().length-1
 
-        const meta = "F" + (capacity==0 ? "" : sign.toString(15).padStart(capacity, 0)) + leadingDecZeroes
+        let meta = "F" + (capacity==0 ? "" : sign.toString(15).padStart(capacity, 0))
+
+        if (lDecZeroes) {
+            meta += leadingDecZeroes
+        }
+
         return meta + num.toString(15)
     }
 

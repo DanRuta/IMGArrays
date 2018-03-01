@@ -10,45 +10,58 @@ const {halfwayData} = require("../benchmarks data/medium/halfwayData.js")
 // Sanity tests and edge cases
 describe("numToHex", () => {
     // Capacity 1
-    it("Example 1", () => expect(PNGArrays.numToHex(0.6153689003735051)).to.equal("F70003266688d960e1b"))
-    it("Example 2", () => expect(PNGArrays.numToHex(-0.6153651)).to.equal("F0000818486"))
+    it("Example 1", () => expect(PNGArrays.numToHex(0.6153689003735051)).to.equal("F7003266688d960e1b"))
+    it("Example 2", () => expect(PNGArrays.numToHex(-0.6153651)).to.equal("F000818486"))
     it("Example 3", () => expect(PNGArrays.numToHex(10)).to.equal("F800a"))
     it("Example 4", () => expect(PNGArrays.numToHex(5000000)).to.equal("Fd0068b735"))
     it("Example 5", () => expect(PNGArrays.numToHex(50000000)).to.equal("Fe0045c9c35"))
     it("Example 6", () => expect(PNGArrays.numToHex(99999999)).to.equal("Fe008ba4969"))
     // Capacity 0
-    it("Example 7", () => expect(PNGArrays.numToHex(0.6153651, 0)).to.equal("F000818486"))
-    it("Example 8", () => expect(PNGArrays.numToHex(0.6153689003735051, 0)).to.equal("F0003266688d960e1b"))
+    it("Example 7", () => expect(PNGArrays.numToHex(0.6153651, 0)).to.equal("F00818486"))
+    it("Example 8", () => expect(PNGArrays.numToHex(0.6153689003735051, 0)).to.equal("F003266688d960e1b"))
     // Capacity 2
-    it("Example 9", () => expect(PNGArrays.numToHex(170859374.1, 2)).to.equal("F7d00eeeeeee1"))
+    it("Example 9", () => expect(PNGArrays.numToHex(170859374.1, 2)).to.equal("F7d0eeeeeee1"))
     it("Example 10", () => expect(PNGArrays.numToHex(50000000, 2)).to.equal("F7e0045c9c35"))
     it("Example 11", () => expect(PNGArrays.numToHex(2562890624, 2)).to.equal("F8100eeeeeeee"))
     it("Example 12", () => expect(PNGArrays.numToHex(999999999999, 2)).to.equal("F83001b02b766469"))
     it("Example 13", () => expect(PNGArrays.numToHex(999999999999999, 2)).to.equal("F86007a924652eb469"))
-    // TODO
-    it("Example 14", () => expect(PNGArrays.numToHex(999999.123, 2)).to.equal("F7c0014b46983"))
-    it("Example 15", () => expect(PNGArrays.numToHex(9999999.123, 2)).to.equal("F7c00d27e6983"))
+    it("Example 14", () => expect(PNGArrays.numToHex(999999.123, 2)).to.equal("F7c014b46983"))
+    it("Example 15", () => expect(PNGArrays.numToHex(9999999.123, 2)).to.equal("F7c0d27e6983"))
+
+    it("Example 16", () => expect(PNGArrays.numToHex(-1430.01623, 1)).to.equal("F21655733"))
+    // leading dec capacity
+    it("Example 17", () => expect(PNGArrays.numToHex(10.123, 1, false)).to.equal("F7a83"))
+    it("Example 18", () => expect(PNGArrays.numToHex(10.123, 1, true)).to.equal("F70a83"))
+    it("Example 19", () => expect(PNGArrays.numToHex(-101010.0123, 1, true)).to.equal("F411ede083"))
+    it("Example 20", () => expect(PNGArrays.numToHex(1.000000000000001, 1, true)).to.equal("F7e11"))
 })
 
 describe("hexToNum", () => {
     // Capacity 1
-    it("Example 1", () => expect(PNGArrays.hexToNum("70003266688d960e1b")).to.equal(0.6153689003735051))
-    it("Example 2", () => expect(PNGArrays.hexToNum("0000818486")).to.equal(-0.6153651))
+    it("Example 1", () => expect(PNGArrays.hexToNum("7003266688d960e1b")).to.equal(0.6153689003735051))
+    it("Example 2", () => expect(PNGArrays.hexToNum("000818486")).to.equal(-0.6153651))
     it("Example 3", () => expect(PNGArrays.hexToNum("800a")).to.equal(10))
     it("Example 4", () => expect(PNGArrays.hexToNum("d0068b735")).to.equal(5000000))
     it("Example 5", () => expect(PNGArrays.hexToNum("e0045c9c35")).to.equal(50000000))
     it("Example 6", () => expect(PNGArrays.hexToNum("e008ba4969")).to.equal(99999999))
     // Capacity 0
-    it("Example 7", () => expect(PNGArrays.hexToNum("000818486", 0)).to.equal(0.6153651))
-    it("Example 8", () => expect(PNGArrays.hexToNum("0003266688d960e1b", 0)).to.equal(0.6153689003735051))
+    it("Example 7", () => expect(PNGArrays.hexToNum("00818486", 0)).to.equal(0.6153651))
+    it("Example 8", () => expect(PNGArrays.hexToNum("003266688d960e1b", 0)).to.equal(0.6153689003735051))
     // Capacity 2
-    it("Example 9", () => expect(PNGArrays.hexToNum("7d00eeeeeee1", 2)).to.equal(170859374.1))
+    it("Example 9", () => expect(PNGArrays.hexToNum("7d0eeeeeee1", 2)).to.equal(170859374.1))
     it("Example 10", () => expect(PNGArrays.hexToNum("7e0045c9c35", 2)).to.equal(50000000))
     it("Example 11", () => expect(PNGArrays.hexToNum("8100eeeeeeee", 2)).to.equal(2562890624))
     it("Example 12", () => expect(PNGArrays.hexToNum("83001b02b766469", 2)).to.equal(999999999999))
     it("Example 13", () => expect(PNGArrays.hexToNum("86007a924652eb469", 2)).to.equal(999999999999999))
-    it("Example 14", () => expect(PNGArrays.hexToNum("7c0014b46983", 2)).to.equal(999999.123))
-    it("Example 15", () => expect(PNGArrays.hexToNum("7c00d27e6983", 2)).to.equal(9999999.123))
+    it("Example 14", () => expect(PNGArrays.hexToNum("7c014b46983", 2)).to.equal(999999.123))
+    it("Example 15", () => expect(PNGArrays.hexToNum("7c0d27e6983", 2)).to.equal(9999999.123))
+
+    it("Example 16", () => expect(PNGArrays.hexToNum("21655733", 1)).to.equal(-1430.01623))
+    // leading dec capacity
+    it("Example 17", () => expect(PNGArrays.hexToNum("7a83", 1, false)).to.equal(10.123))
+    it("Example 18", () => expect(PNGArrays.hexToNum("70a83", 1, true)).to.equal(10.123))
+    it("Example 19", () => expect(PNGArrays.hexToNum("411ede083", 1, true)).to.equal(-101010.0123))
+    it("Example 20", () => expect(PNGArrays.hexToNum("7e11", 1, true)).to.equal(1.000000000000001))
 })
 
 describe("MNIST Example", () => {
