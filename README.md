@@ -1,5 +1,5 @@
 # IMGArrays
-Compression algorithm for numerical lists. Output is encoded as a PNG image, and beats gzip. Browser + Nodejs
+Compression algorithm for numerical lists. Output is encoded as an image, and beats gzip. Browser + Nodejs
 
 <img width="100%" src="fc.png">
 
@@ -15,7 +15,7 @@ The library can be used in both the browser, and nodejs. The browser version is 
 
 ### Converting to image
 
-##### PNGArrays.toIMG(array, {alpha, file, width, capacity})
+##### IMGArrays.toIMG(array, {alpha, file, width, capacity})
 **array** - _Array_ |_Uint8ClampedArray_
 
 The array of data to convert. This can be either a Uint8ClampedArray, or an array of numbers that will get converted to Uint8ClampedArray
@@ -39,7 +39,7 @@ Whether to use a metadata character to encode leading decimal zeroes. This can b
 
 ### Converting from image
 
-##### PNGArrays.fromIMG(data, {alpha, capacity})
+##### IMGArrays.fromIMG(data, {alpha, capacity})
 **data** - _Uint8ClampedArray_|_HTMLImageElement_|_string_
 
 The image data to parse. This can be an image element, when using the browser.
