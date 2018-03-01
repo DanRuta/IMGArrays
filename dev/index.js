@@ -190,7 +190,7 @@ class PNGArrays {
             return 0
         }
 
-        const positive = capacity==2 ? (parseInt(hex.slice(0, 2), 15) >= 112) : (parseInt(hex[0], 16) >= 7)
+        const positive = capacity==2 ? (parseInt(hex.slice(0, 2), 15) >= 112) : (parseInt(hex[0], 16) >= 8)
         const metaOffset = capacity + (lDecZeroes ? 1 : 0)
 
         const meta = hex.slice(0, metaOffset)
@@ -201,7 +201,7 @@ class PNGArrays {
         if (capacity==2) {
             valuesIn = parseInt(meta.slice(0, 2), 15) - ((positive ? 112 : 0) - 1)
         } else {
-            valuesIn = parseInt(meta[0], 15) - (positive ? 6 : -1)
+            valuesIn = parseInt(meta[0], 15) - (positive ? 8 : 0) + 1
         }
 
         let right = ""
@@ -224,12 +224,12 @@ class PNGArrays {
     static numToHex (num, capacity=1, lDecZeroes=true) {
 
         let sign
-        let leadingDecZeroes = "00"
+        let leadingDecZeroes = "0"
 
         if (capacity==2) {
             sign = num > 0 ? 112 : 0
         } else {
-            sign = num > 0 ? 7 : 0
+            sign = num > 0 ? 8 : 0
         }
 
         num = Math.abs(num)
@@ -267,7 +267,7 @@ class PNGArrays {
             return meta + left+right
         }
 
-        sign += num.toString().length-1
+        sign += num.toString(15).length-1
 
         let meta = "F" + (capacity==0 ? "" : sign.toString(15).padStart(capacity, 0))
 
