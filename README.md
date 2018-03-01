@@ -1,4 +1,4 @@
-# PNGArrays
+# IMGArrays
 Compression algorithm for numerical lists. Output is encoded as a PNG image, and beats gzip. Browser + Nodejs
 
 <img width="100%" src="fc.png">
@@ -9,13 +9,13 @@ Examples can be found in the `demo.html`, and `convert.js` files.
 
 ## How to use
 
-The library can be used in both the browser, and nodejs. The nodejs version, however, is greatly preferrable, as it includes the optiPNG lossless compression optimizer (http://optipng.sourceforge.net/) as an extra, final step, which reduces the output to a smaller size than gzip. The browser version still does most of the same compression work (which still has its uses), but does not compress to smaller than gzip.
+The library can be used in both the browser, and nodejs. The browser version is currently greatly preferrable, as it allows saving and loading images in WebP format, which is much smaller than the PNG alternative. Though Nodejs can also be used, I was not able to figure out how to save and read WebP format, so PNG is the only option. WebP is the preferrable format, as it matches, and marginally beats gzip, whereas PNG is slightly bigger.
 
 *Pretty charts from benchmarks to follow soon, but you can already see the results in the 'benchmarks data' folder*
 
-### Converting to PNG
+### Converting to image
 
-##### PNGArrays.toPNG(array, {alpha, file, width, capacity})
+##### PNGArrays.toIMG(array, {alpha, file, width, capacity})
 **array** - _Array_ |_Uint8ClampedArray_
 
 The array of data to convert. This can be either a Uint8ClampedArray, or an array of numbers that will get converted to Uint8ClampedArray
@@ -37,12 +37,12 @@ How many characters of metadata to use per value. More information and explanati
 Whether to use a metadata character to encode leading decimal zeroes. This can be turned off, for example, if the values encoded are not decimal, or you are absolutely sure none of them have decimal values that start with 0.
 
 
-### Converting from PNG
+### Converting from image
 
-##### PNGArrays.fromPNG(data, {alpha, capacity})
+##### PNGArrays.fromIMG(data, {alpha, capacity})
 **data** - _Uint8ClampedArray_|_HTMLImageElement_|_string_
 
-The PNG data to parse. This can be an image element, when using the browser.
+The image data to parse. This can be an image element, when using the browser.
 For reading from a file, when using nodejs, this can be a string for the file path to read from.
 Finally, it can be a Uint8ClampedArray, in either case.
 
@@ -52,19 +52,19 @@ Whether to use the alpha channel, when parsing. You need to make sure that alpha
 
 **capacity** - _int_ - *Default*: `1`
 
-The capacity to use for parsing. Must be the same as the value used when converting to PNG.
+The capacity to use for parsing. Must be the same as the value used when converting to an image.
 
 
 ### Other
-You can use the included `PNGArrays.normalize` and `PNGArrays.unnormalize` functions to normalize your data, to allow you to use the lowest capacity size.
+You can use the included `IMGArrays.normalize` and `IMGArrays.unnormalize` functions to normalize your data, to allow you to use the lowest capacity size.
 
-The `PNGArrays.normalize` returns an object containing the minValue, and maxValue, needed when using `PNGArrays.unnormalize`. Example:
+The `IMGArrays.normalize` returns an object containing the minValue, and maxValue, needed when using `IMGArrays.unnormalize`. Example:
 ```javascript
 const data = [1,2,3,-5,0.4,2]
-const {minVal, maxVal} = PNGArrays.normalize(data)
+const {minVal, maxVal} = IMGArrays.normalize(data)
 // data == [0.75, 0.875, 1, 0, 0.675, 0.875]
 // minVal = -5
 // maxVal = 3
-PNGArrays.unnormalize(data, -5, 3)
+IMGArrays.unnormalize(data, -5, 3)
 // data == [1,2,3,-5,0.4,2]
 ```

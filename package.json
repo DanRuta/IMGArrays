@@ -1,7 +1,7 @@
 {
-  "name": "pngArrays",
+  "name": "imgArrays",
   "version": "1.0.0",
-  "description": "Array to/from PNG converter",
+  "description": "Array to/from image converter",
   "main": "index.js",
   "scripts": {
     "test": "mocha test/tests.js"

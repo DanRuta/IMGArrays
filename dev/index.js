@@ -6,9 +6,9 @@
         - Automatically choose the best capacity size, by parsing all values first, checking for limits
 */
 
-class PNGArrays {
+class IMGArrays {
 
-    static toPNG (array, {alpha=false, file=false, lDecZeroes=true, width=Math.ceil(Math.sqrt(array.length*(alpha?3:4))), capacity=1}={}) {
+    static toIMG (array, {alpha=false, file=false, lDecZeroes=true, width=Math.ceil(Math.sqrt(array.length*(alpha?3:4))), capacity=1}={}) {
 
         // Convert the array values to Uint8Clamped values (Base 15 with 16th value used as metadata)
         array = array.constructor == Uint8ClampedArray ? array : this.prepareExportData(array, capacity, lDecZeroes)
@@ -39,7 +39,7 @@ class PNGArrays {
                 }
 
                 canvas.toBuffer((err, buf) => {
-                    const writeStream = this.fs.createWriteStream(file.replace(/\.png$/, "")+".png")
+                    const writeStream = this.fs.createWriteStream(file)
                     writeStream.write(buf)
                     resolve()
                     // writeStream.on("finish", () => resolve())
@@ -73,7 +73,7 @@ class PNGArrays {
         }
     }
 
-    static fromPNG (data, {alpha=false, capacity=1, lDecZeroes=true}={}) {
+    static fromIMG (data, {alpha=false, capacity=1, lDecZeroes=true}={}) {
 
         // Read from file
         if (typeof data == "string") {
@@ -343,9 +343,9 @@ class PNGArrays {
 /* istanbul ignore next */
 if (typeof window != "undefined") {
     window.exports = window.exports || {}
-    window.PNGArrays = PNGArrays
+    window.IMGArrays = IMGArrays
 } else {
-    PNGArrays.fs = require("fs")
-    PNGArrays.canvas = require("canvas-prebuilt")
+    IMGArrays.fs = require("fs")
+    IMGArrays.canvas = require("canvas-prebuilt")
 }
-exports.PNGArrays = PNGArrays
+exports.IMGArrays = IMGArrays

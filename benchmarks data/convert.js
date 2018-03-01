@@ -1,7 +1,7 @@
 "use strict"
 
 const args = process.argv.slice(2, 12)
-const {PNGArrays} = require("../dev/index.js")
+const {IMGArrays} = require("../dev/index.js")
 
 let dataPath
 let capacity = 1
@@ -51,7 +51,7 @@ const convert = (file, useAlpha, capacity, folder) => {
 
     console.log(`Converting ${folder} Capacity: ${capacity} Alpha: ${useAlpha}...`)
 
-    PNGArrays.toPNG(data[folder], {
+    IMGArrays.toIMG(data[folder], {
         alpha: useAlpha,
         capacity: capacity,
         file: file

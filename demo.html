@@ -6,7 +6,7 @@
     <script src="./benchmarks data/medium/rawData.js"></script>
 </head>
 <style>
-    #fromexportedpng, #downloadPNG, #downloadWEBP {
+    #fromexportedimg, #downloadPNG, #downloadWEBP {
         display: none;
     }
 </style>
@@ -15,40 +15,41 @@
 window.addEventListener("load", () => {
     console.log("rawData", rawData)
 
-    // const {minVal, maxVal} = PNGArrays.normalize(rawData)
+    // const {minVal, maxVal} = IMGArrays.normalize(rawData)
 
-    topng.addEventListener("click", () => {
+    toIMG.addEventListener("click", () => {
         console.log(rawData)
         out.innerHTML = ""
-        fromexportedpng.style.display = "inline-block"
+        fromexportedimg.style.display = "inline-block"
         downloadPNG.style.display = "inline-block"
         downloadWEBP.style.display = "inline-block"
-        const canvas = PNGArrays.toPNG(rawData, {capacity: 1})
+        const canvas = IMGArrays.toIMG(rawData, {capacity: 1})
         canvas.id = "theCanvas"
         out.appendChild(canvas)
     })
 
-    frompng.addEventListener("click", () => {
-        const data = PNGArrays.fromPNG(demoImg, {capacity: 1})
+    fromIMG.addEventListener("click", () => {
+        const data = IMGArrays.fromIMG(demoImg, {capacity: 1})
         console.log(data)
     })
 
-    fromexportedpng.addEventListener("click", () => {
-        const data = PNGArrays.fromPNG(out.querySelector("canvas"), {capacity: 1})
-        // PNGArrays.unnormalize(data, minVal, maxVal)
+    fromexportedimg.addEventListener("click", () => {
+        const data = IMGArrays.fromIMG(out.querySelector("canvas"), {capacity: 1})
+        // IMGArrays.unnormalize(data, minVal, maxVal)
         console.log(data)
     })
 
-    downloadPNG.addEventListener("click", () => PNGArrays.downloadImage(theCanvas, {name: "image", format: "png"}))
-    downloadWEBP.addEventListener("click", () => PNGArrays.downloadImage(theCanvas, {name: "image", format: "webp"}))
+    downloadPNG.addEventListener("click", () => IMGArrays.downloadImage(theCanvas, {name: "image", format: "png"}))
+    downloadWEBP.addEventListener("click", () => IMGArrays.downloadImage(theCanvas, {name: "image", format: "webp"}))
 })
 </script>
 <body>
     Make sure to serve this page using the included server, to avoid cross origin issues
-    <img id="demoImg" src="fc.png"><br>
-    <button id="topng">Convert raw data to an image</button>
-    <button id="frompng">From above image</button>
-    <button id="fromexportedpng">From converted image</button>
+    <!-- <img id="demoImg" src="fc.png"><br> -->
+    <img id="demoImg" src="./benchmarks data/medium/browser.webp"><br>
+    <button id="toIMG">Convert raw data to an image</button>
+    <button id="fromIMG">From above image</button>
+    <button id="fromexportedimg">From converted image</button>
     <br><br>(Open the console)
     <button id="downloadWEBP">Download as WEBP</button>
     <button id="downloadPNG">Download as PNG</button>
