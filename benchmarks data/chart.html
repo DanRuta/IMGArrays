@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Charts</title>
+    <!-- // <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.0.0/Chart.min.js"></script> -->
+    <script src="Chart.min.js"></script>
+</head>
+<script>
+"use strict"
+window.addEventListener("load", () => {
+
+    const imgData = {
+        small: {
+            original: 408,
+            gzip: 180,
+            node: 192,
+            "browser-png": 201,
+            "browser-webp": 178
+        },
+        "medium": {
+            original: 1607,
+            gzip: 716,
+            node: 762,
+            "browser-png": 798,
+            "browser-webp": 701
+        },
+        "large": {
+            original: 6528,
+            gzip: 2841,
+            node: 3037,
+            "browser-png": 3206,
+            "browser-webp": 2807
+        }
+    }
+
+    const computeData = () => {
+
+        const groups = Object.keys(imgData)
+
+        const data = {
+            original: [],
+            gzip: [],
+            node: [],
+            "browser-png": [],
+            "browser-webp": []
+        }
+
+        for (let i=0; i<3; i++) {
+            data.original.push(imgData[groups[i]].original / imgData[groups[i]].gzip)
+            data.gzip.push(1)
+            data.node.push(imgData[groups[i]].node / imgData[groups[i]].gzip)
+            data["browser-png"].push(imgData[groups[i]]["browser-png"] / imgData[groups[i]].gzip)
+            data["browser-webp"].push(imgData[groups[i]]["browser-webp"] / imgData[groups[i]].gzip)
+        }
+
+        return data
+    }
+
+    const relativeData = computeData()
+    console.log("relativeData", relativeData)
+
+
+    const data = {
+        labels: ["Small", "Medium", "Large"],
+        datasets: [
+        {
+            label: "Original",
+            backgroundColor: "black",
+            hidden: true,
+            data: relativeData.original
+        },{
+            label: "Gzip",
+            backgroundColor: "gray",
+            data: relativeData.gzip
+        }, {
+            label: "Browser WebP",
+            backgroundColor: "green",
+            data: relativeData["browser-webp"]
+        }, {
+            label: "Browser PNG",
+            backgroundColor: "red",
+            data: relativeData["browser-png"]
+        }, {
+            label: "Node",
+            backgroundColor: "red",
+            data: relativeData.node
+        }
+        ]
+    }
+
+    const canvas = document.createElement("canvas")
+    canvas.height = 500
+    canvas.width = 1000
+    document.body.appendChild(canvas)
+
+    const myBarChart = new Chart(canvas.getContext("2d"), {
+        type: "bar",
+        data: data,
+        options: {
+            barValueSpacing: 20,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        min: 0,
+                    }
+                }]
+            }
+        }
+    })
+})
+</script>
+<body>
+</body>
+</html>

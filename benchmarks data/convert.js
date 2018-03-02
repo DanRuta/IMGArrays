@@ -62,12 +62,7 @@ const convert = (file, useAlpha, capacity, folder) => {
 
 if (doAllBenchmarks) {
 
-    ["small", "medium-small", "medium", "medium-large", "large"].forEach(folder => {
-        for (let c=0; c<3; c++) {
-            convert(`./${folder}/node-${c}.png`, false, c, folder)
-            // convert(`./${folder}/node-${c}-alpha.png`, true, c, folder)
-        }
-    })
+    ["small", "medium", "large"].forEach(folder => convert(`./${folder}/node.png`, false, 1, folder))
 
 } else {
     convert(`./${dataPath}/node-${capacity}${useAlpha ? "-alpha" : ""}.png`, useAlpha, capacity, dataPath)

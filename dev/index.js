@@ -215,6 +215,10 @@ class IMGArrays {
             valuesIn = parseInt(meta[0], 15) - (positive ? 8 : 0) + 1
         }
 
+        if (capacity==0) {
+            valuesIn--
+        }
+
         let right = ""
         const left = hex.slice(0, valuesIn) || "0"
         const leadingDecZeroes = lDecZeroes ? parseInt(meta.slice(capacity, metaOffset), 15) : 0
@@ -275,7 +279,11 @@ class IMGArrays {
                 meta += leadingDecZeroes
             }
 
-            return meta + left+right
+            if (capacity==0) {
+                return meta + right
+            }
+
+            return meta + left + right
         }
 
         sign += num.toString(15).length-1
