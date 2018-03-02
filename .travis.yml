@@ -1,6 +1,7 @@
 sudo: false
 language: node_js
 node_js:
-  - 7.5.0
+  - 8.2.0
 script:
+  - nvm install v8.7.0
   - npm test
