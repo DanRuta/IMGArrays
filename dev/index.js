@@ -336,7 +336,7 @@ class IMGArrays {
         }
     }
 
-    static downloadImage (canvas, {name="image", format="webp"}) {
+    static downloadImage (canvas, {name="image", format="webp"}={}) {
         const link = document.createElement("a")
         link.download = `${name}.${format}`
 
