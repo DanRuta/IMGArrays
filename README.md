@@ -1,4 +1,8 @@
 # IMGArrays
+
+[![Build Status](https://travis-ci.org/DanRuta/IMGArrays.svg?branch=master)](https://travis-ci.org/DanRuta/IMGArrays)
+
+
 Compression algorithm for numerical lists. Output is encoded as an image, and beats gzip. Browser + Nodejs
 
 <img width="100%" src="fc.png">
