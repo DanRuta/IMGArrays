@@ -7,12 +7,21 @@
 </head>
 <script>
 "use strict"
+window.generateRandomDecValues = (count) => {
+    const data = []
+
+    for (let i=0; i<count; i++) {
+        data.push(Math.floor(Math.random()*10)/10)
+    }
+    return data
+}
+
 window.addEventListener("load", () => {
 
     const imgData = {
         small: {
             original: 408,
-            gzip: 180,
+            gzip: 179,
             node: 192,
             "browser-png": 201,
             "browser-webp": 178
@@ -30,6 +39,38 @@ window.addEventListener("load", () => {
             node: 3037,
             "browser-png": 3206,
             "browser-webp": 2807
+        }
+    }
+
+    const capacityimgData = {
+        "gzip": 52,
+        "0": {
+            png: 59,
+            webp: 34
+        },
+        "1": {
+            png: 100,
+            webp: 52
+        },
+        "2": {
+            png: 83,
+            webp: 55
+        }
+    }
+
+    const lDecZeroesimgData = {
+        "gzip": 322,
+        "0": {
+            with: 206,
+            without: 275
+        },
+        "1": {
+            with: 316,
+            without: 287
+        },
+        "2": {
+            with: 332,
+            without: 316
         }
     }
 
@@ -56,35 +97,124 @@ window.addEventListener("load", () => {
         return data
     }
 
+    const computeCapacityData = () => {
+
+        const groups = Object.keys(capacityimgData)
+
+        const data = {
+            gzip: [],
+            // node: [],
+            png: [], 
+            webp: []
+        }
+
+        data.gzip.push(1)
+        data.png.push(0)
+        data.webp.push(0)
+
+        for (let i=0; i<3; i++) {
+            data["png"].push(capacityimgData[groups[i]]["png"] / capacityimgData.gzip)
+            data["webp"].push(capacityimgData[groups[i]]["webp"] / capacityimgData.gzip)
+        }
+        return data
+    }
+
+    const computelDecZData = () => {
+
+        const groups = Object.keys(lDecZeroesimgData)
+
+        const data = {
+            gzip: [],
+            // node: [],
+            with: [], 
+            without: []
+        }
+
+        data.gzip.push(1)
+        data.with.push(0)
+        data.without.push(0)
+
+        for (let i=0; i<3; i++) {
+            data["with"].push(lDecZeroesimgData[groups[i]]["with"] / lDecZeroesimgData.gzip)
+            data["without"].push(lDecZeroesimgData[groups[i]]["without"] / lDecZeroesimgData.gzip)
+        }
+        return data
+    }
+
     const relativeData = computeData()
-    console.log("relativeData", relativeData)
+    const capacityData = computeCapacityData()
+    console.log("capacityData", capacityData)
+    const lDecZData = computelDecZData()
+    console.log("lDecZData", lDecZData)
 
 
     const data = {
         labels: ["Small", "Medium", "Large"],
         datasets: [
-        {
-            label: "Original",
-            backgroundColor: "black",
-            hidden: true,
-            data: relativeData.original
-        },{
-            label: "Gzip",
-            backgroundColor: "gray",
-            data: relativeData.gzip
-        }, {
-            label: "Browser WebP",
-            backgroundColor: "green",
-            data: relativeData["browser-webp"]
-        }, {
-            label: "Browser PNG",
-            backgroundColor: "red",
-            data: relativeData["browser-png"]
-        }, {
-            label: "Node",
-            backgroundColor: "red",
-            data: relativeData.node
-        }
+            {
+                label: "Original",
+                backgroundColor: "black",
+                hidden: true,
+                data: relativeData.original
+            },{
+                label: "Gzip",
+                backgroundColor: "gray",
+                data: relativeData.gzip
+            }, {
+                label: "Browser WebP",
+                backgroundColor: "green",
+                data: relativeData["browser-webp"]
+            }, {
+                label: "Browser PNG",
+                backgroundColor: "red",
+                data: relativeData["browser-png"]
+            }, {
+                label: "Node",
+                backgroundColor: "red",
+                data: relativeData.node
+            }
+        ]
+    }
+
+    const capacityChartData = {
+        labels: ["gzip", "0", "1", "2"],
+        datasets: [
+            {
+                label: "gzip",
+                backgroundColor: "gray",
+                data: capacityData.gzip
+            },
+            {
+                label: "png",
+                backgroundColor: "darkred",
+                data: capacityData.png
+            },
+            {
+                label: "webp",
+                backgroundColor: "darkgreen",
+                data: capacityData.webp
+            }
+        ]
+    }
+
+    const lDecZChartData = {
+        labels: ["gzip", "0", "1", "2"],
+        datasets: [
+            {
+                label: "gzip",
+                backgroundColor: "gray",
+                data: lDecZData.gzip
+            },
+            {
+                label: "with",
+                backgroundColor: "darkgreen",
+                data: lDecZData.with
+            },
+            {
+                label: "without",
+                backgroundColor: "darkblue",
+                data: lDecZData.without
+            }
         ]
     }
 
@@ -93,9 +223,49 @@ window.addEventListener("load", () => {
     canvas.width = 1000
     document.body.appendChild(canvas)
 
-    const myBarChart = new Chart(canvas.getContext("2d"), {
+    const barChart = new Chart(canvas.getContext("2d"), {
         type: "bar",
         data: data,
+        options: {
+            barValueSpacing: 20,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        min: 0,
+                    }
+                }]
+            }
+        }
+    })
+
+    const capacityCanvas = document.createElement("canvas")
+    capacityCanvas.height = 500
+    capacityCanvas.width = 1000
+    document.body.appendChild(capacityCanvas)
+
+    const capacityBarChart = new Chart(capacityCanvas.getContext("2d"), {
+        type: "bar",
+        data: capacityChartData,
+        options: {
+            barValueSpacing: 20,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        min: 0,
+                    }
+                }]
+            }
+        }
+    })
+
+    const lDecZCanvas = document.createElement("canvas")
+    lDecZCanvas.height = 500
+    lDecZCanvas.width = 1000
+    document.body.appendChild(lDecZCanvas)
+
+    const lDecZBarChart = new Chart(lDecZCanvas.getContext("2d"), {
+        type: "bar",
+        data: lDecZChartData,
         options: {
             barValueSpacing: 20,
             scales: {
