@@ -7,7 +7,9 @@ Compression algorithm for numerical lists. Output is encoded as an image, and be
 
 <img width="100%" src="fc.png">
 
-## More documentation to follow.
+## Article
+
+https://medium.freecodecamp.org/data-compression-using-images-5eaede612c28
 
 Examples can be found in the `demo.html`, and `convert.js` files.
 
