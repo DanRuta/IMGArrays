@@ -22,6 +22,7 @@ window.addEventListener("load", () => {
         small: {
             original: 408,
             gzip: 179,
+            lz: 252,
             node: 192,
             "browser-png": 201,
             "browser-webp": 178
@@ -29,6 +30,8 @@ window.addEventListener("load", () => {
         "medium": {
             original: 1607,
             gzip: 716,
+            // lz: 399,
+            lz: 1000,
             node: 762,
             "browser-png": 798,
             "browser-webp": 701
@@ -36,6 +39,7 @@ window.addEventListener("load", () => {
         "large": {
             original: 6528,
             gzip: 2841,
+            lz: 3892,
             node: 3037,
             "browser-png": 3206,
             "browser-webp": 2807
@@ -44,6 +48,7 @@ window.addEventListener("load", () => {
 
     const capacityimgData = {
         "gzip": 52,
+        "lz": 68,
         "0": {
             png: 59,
             webp: 34
@@ -60,6 +65,7 @@ window.addEventListener("load", () => {
 
     const lDecZeroesimgData = {
         "gzip": 322,
+        "lz": 399,
         "0": {
             with: 206,
             without: 275
@@ -81,6 +87,7 @@ window.addEventListener("load", () => {
         const data = {
             original: [],
             gzip: [],
+            lz: [],
             node: [],
             "browser-png": [],
             "browser-webp": []
@@ -89,6 +96,7 @@ window.addEventListener("load", () => {
         for (let i=0; i<3; i++) {
             data.original.push(imgData[groups[i]].original / imgData[groups[i]].gzip)
             data.gzip.push(1)
+            data.lz.push(imgData[groups[i]].lz / imgData[groups[i]].gzip)
             data.node.push(imgData[groups[i]].node / imgData[groups[i]].gzip)
             data["browser-png"].push(imgData[groups[i]]["browser-png"] / imgData[groups[i]].gzip)
             data["browser-webp"].push(imgData[groups[i]]["browser-webp"] / imgData[groups[i]].gzip)
@@ -103,12 +111,14 @@ window.addEventListener("load", () => {
 
         const data = {
             gzip: [],
+            lz: [],
             // node: [],
-            png: [], 
+            png: [],
             webp: []
         }
 
         data.gzip.push(1)
+        data.lz.push(capacityimgData.lz / capacityimgData.gzip)
         data.png.push(0)
         data.webp.push(0)
 
@@ -125,12 +135,14 @@ window.addEventListener("load", () => {
 
         const data = {
             gzip: [],
+            lz: [],
             // node: [],
-            with: [], 
+            with: [],
             without: []
         }
 
         data.gzip.push(1)
+        data.lz.push(lDecZeroesimgData.lz / lDecZeroesimgData.gzip)
         data.with.push(0)
         data.without.push(0)
 
@@ -161,6 +173,10 @@ window.addEventListener("load", () => {
                 backgroundColor: "gray",
                 data: relativeData.gzip
             }, {
+                label: "LZ",
+                backgroundColor: "darkgray",
+                data: relativeData.lz
+            }, {
                 label: "Browser WebP",
                 backgroundColor: "green",
                 data: relativeData["browser-webp"]
@@ -177,12 +193,16 @@ window.addEventListener("load", () => {
     }
 
     const capacityChartData = {
-        labels: ["gzip", "0", "1", "2"],
+        labels: ["gzip", "lz", "0", "1", "2"],
         datasets: [
             {
                 label: "gzip",
                 backgroundColor: "gray",
                 data: capacityData.gzip
+            },{
+                label: "lz",
+                backgroundColor: "darkgray",
+                data: capacityData.lz
             },
             {
                 label: "png",
@@ -198,12 +218,16 @@ window.addEventListener("load", () => {
     }
 
     const lDecZChartData = {
-        labels: ["gzip", "0", "1", "2"],
+        labels: ["gzip", "lz", "0", "1", "2"],
         datasets: [
             {
                 label: "gzip",
                 backgroundColor: "gray",
                 data: lDecZData.gzip
+            },{
+                label: "lz",
+                backgroundColor: "darkgray",
+                data: lDecZData.lz
             },
             {
                 label: "with",
